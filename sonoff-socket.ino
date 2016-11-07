@@ -1,13 +1,13 @@
 #include <Homie.h>
 
 #define PIN_BUTTON 0
-#define PIN_RELAY 12
-#define PIN_LED 13
+#define PIN_RELAY 12  // active on HIGH
+#define PIN_LED 13    // active on LOW
 
 HomieNode switchNode("switch", "switch");
 
 #define FW_NAME "sonoff-socket"
-#define FW_VERSION "1.0.1"
+#define FW_VERSION "1.0.2"
 
 /* Magic sequence for Autodetectable Binary Upload */
 const char *__FLAGGED_FW_NAME = "\xbf\x84\xe4\x13\x54" FW_NAME "\x93\x44\x6b\xa7\x75";
@@ -29,7 +29,7 @@ bool switchOnHandler(String value) {
     return false;
   }
   digitalWrite(PIN_RELAY, relayState);
-  digitalWrite(PIN_LED, !relayState);
+  digitalWrite(PIN_LED, relayState);
   Homie.setNodeProperty(switchNode, "on", (relayState == HIGH) ? "true" : "false", true);
   Serial.print("Switch is "); Serial.println((relayState == HIGH) ? "on" : "off");
   return true;
@@ -87,7 +87,7 @@ void loop() {
         } else {
           // not in normal mode or network connection down
           digitalWrite(PIN_RELAY, relayState);
-          digitalWrite(PIN_LED, !relayState);
+          digitalWrite(PIN_LED, relayState);
         }
       }
     }
